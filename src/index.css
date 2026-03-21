@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+/* ── Design tokens ─────────────────────────────────────── */
+:root {
+  --bg:            #06090f;
+  --bg-subtle:     #0c1118;
+  --bg-muted:      rgba(255,255,255,0.025);
+  --bg-hover:      rgba(255,255,255,0.048);
+  --bg-input:      rgba(255,255,255,0.04);
+  --border:        rgba(255,255,255,0.07);
+  --border-md:     rgba(255,255,255,0.12);
+  --border-focus:  rgba(56,189,248,0.4);
+  --text-1:        #e6edf3;
+  --text-2:        #7d8590;
+  --text-3:        #3d444d;
+  --accent:        #38bdf8;
+  --accent-dim:    rgba(56,189,248,0.55);
+  --ok:            #3fb950;
+  --ok-bg:         rgba(63,185,80,0.08);
+  --ok-border:     rgba(63,185,80,0.18);
+  --fail:          #f85149;
+  --fail-bg:       rgba(248,81,73,0.08);
+  --fail-border:   rgba(248,81,73,0.18);
+  --warn:          #d29922;
+  --warn-bg:       rgba(210,153,34,0.08);
+  --warn-border:   rgba(210,153,34,0.18);
+  --font-sans:     'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* ── Reset ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text-1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02','cv03','cv04','cv11';
+}
+
+#root { min-height: 100vh; }
+
+/* ── Keyframes ──────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Hero animation classes ─────────────────────────────── */
+.anim-up { animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-in { animation: fadeIn 0.5s ease both; }
+.d1 { animation-delay: 50ms;  }
+.d2 { animation-delay: 150ms; }
+.d3 { animation-delay: 250ms; }
+.d4 { animation-delay: 350ms; }
+.d5 { animation-delay: 450ms; }
+
+/* ── Scroll reveal ──────────────────────────────────────── */
+.sr {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.sr.in { opacity: 1; transform: none; }
+.sr-d1 { transition-delay: 0ms;   }
+.sr-d2 { transition-delay: 90ms;  }
+.sr-d3 { transition-delay: 180ms; }
+
+/* ── Form controls ──────────────────────────────────────── */
+.inp {
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.15s;
+  -moz-appearance: textfield;
+}
+.inp:focus { border-color: var(--border-focus); }
+.inp::-webkit-outer-spin-button,
+.inp::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.sel {
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  appearance: none;
+}
+.sel:focus { border-color: var(--border-focus); }
+
+/* ── Buttons ────────────────────────────────────────────── */
+.btn-calc {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: var(--accent);
+  color: #050a12;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn-calc:hover  { opacity: 0.88; }
+.btn-calc:active { transform: scale(0.99); }
+
+/* ── Status chips ───────────────────────────────────────── */
+.chip {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.28rem 0.6rem; border-radius: 4px;
+  font-size: 0.73rem; font-weight: 500;
+}
+.chip-ok   { color: var(--ok);   background: var(--ok-bg);   border: 1px solid var(--ok-border);   }
+.chip-fail { color: var(--fail); background: var(--fail-bg); border: 1px solid var(--fail-border); }
+.chip-warn { color: var(--warn); background: var(--warn-bg); border: 1px solid var(--warn-border); }
+
+/* ── Label / badge ──────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center;
+  font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  padding: 0.18rem 0.5rem; border-radius: 3px;
+  background: rgba(56,189,248,0.07);
+  color: rgba(56,189,248,0.7);
+  border: 1px solid rgba(56,189,248,0.12);
+}
+
+.field-label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-2);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.02em;
+}
+
+.section-heading {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.85rem;
+}
+
+/* ── Result row ─────────────────────────────────────────── */
+.res-row {
+  display: flex; align-items: baseline;
+  justify-content: space-between;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.res-row:last-child { border-bottom: none; }
+.res-label { font-size: 0.78rem; color: var(--text-2); }
+.res-value {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+}
+.res-unit { font-size: 0.7rem; color: var(--text-3); margin-left: 0.25rem; }
+
+/* ── Divider ────────────────────────────────────────────── */
+.div-h { height: 1px; background: var(--border); }
+
+/* ── Responsive module grid ─────────────────────────────── */
+/* Used on the outer 55/45 grid div of every module.        */
+/* At ≤899 px cols stack vertically.                        */
+@media (max-width: 899px) {
+  .module-grid {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .module-grid > div {
+    overflow-y: visible !important;
+    max-height: none !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+  }
+  .module-grid > div:last-child {
+    border-bottom: none;
+  }
+}
+
+/* ── Responsive sidebar ─────────────────────────────────── */
+@media (max-width: 899px) {
+  .sidebar-label,
+  .sidebar-sub,
+  .sidebar-footer,
+  .sidebar-brand-text,
+  .sidebar-section-label {
+    display: none !important;
+  }
+}
