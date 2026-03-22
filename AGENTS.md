@@ -128,7 +128,7 @@ npm run preview   # Preview production build
 
 - **Do not invent structural formulas.** All calculations must reference the applicable standard article. When modifying engine files, preserve or update the normative reference comments.
 - **Keep engines pure.** No React imports, no DOM access, no side effects in `engine/` files. They receive plain objects and return plain objects.
-- **Preserve unit conventions.** Engines work in N/mm/MPa internally. Convert kN↔N and m↔mm at the UI boundary.
+- **Preserve unit conventions.** Follow the unit system already used in each engine. Many `hormigon/engine` and `acero/engine` modules work in N/mm/MPa, while several `cimentaciones/engine/*` modules work in kN/m. Do not change an engine’s internal units; perform any kN↔N and m↔mm conversions at the UI/engine boundary.
 - **Spanish domain terms are intentional.** Do not translate `cumple`, `aprovechamiento`, `Md`, `fck`, etc. to English — they match professional usage.
 - **Match existing component patterns.** New calculators should follow the same `useState` + `set()` + `useMemo` + `CalculateButton` + `ResultsTable` structure.
 - **SVG diagrams must work in both screen and PDF.** Use the same color-adaptation approach as existing diagrams (dark-on-light inversion for print).
