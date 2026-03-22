@@ -80,8 +80,9 @@ CalculateButton → setResults(output) → setIsStale(false)
 
 ### Units
 
-- **Internal**: N, mm, MPa (all engine calculations)
-- **User-facing I/O**: kN, m, MPa (convert at boundaries)
+- **User-facing I/O (UI + PDFs)**: Typically kN, m, MPa. All modules aim to present loads and dimensions in these units to the user.
+- **Internal engine units**: Per-module, not global. Some engines work in N, mm, MPa; cimentaciones engines document internal kN and m; acero engines accept/return kN and m and use localized conversion helpers where needed.
+- **Conversions**: Each engine file documents its own internal unit system. Conversions happen at the UI/engine boundary (or via shared helpers) so that UI components can consistently work with kN, m, MPa.
 
 ### Component Pattern
 
