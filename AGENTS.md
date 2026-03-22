@@ -21,8 +21,8 @@ Concreta is a client-side structural engineering calculator for Spanish construc
 
 ```
 src/
-  main.jsx              # Entry point, BrowserRouter setup
-  App.jsx               # Route definitions
+  main.jsx              # Entry point, renders <App />
+  App.jsx               # BrowserRouter setup and route definitions
   index.css             # Tailwind directives, CSS design tokens, theme variables
   pages/                # Route-level pages (Landing, Hormigon, Acero, Cimentaciones)
   modules/              # Feature modules, each with UI + engine/
