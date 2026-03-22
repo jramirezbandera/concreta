@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react'
 import { NavLink, Outlet, Link } from 'react-router-dom'
-import { Building2, Wrench, Layers, ChevronLeft } from 'lucide-react'
+import { ChevronLeft, Sun, Moon } from 'lucide-react'
+import { useTheme } from '../../hooks/useTheme'
+import { HormigonIcon, AceroIcon, CimentacionesIcon } from '../svg/ModuleIcons'
 
 const NAV_ITEMS = [
-  { icon: Building2, label: 'Hormigón Armado', sub: 'EHE-08 / CE',  to: '/app/hormigon'      },
-  { icon: Wrench,    label: 'Acero',            sub: 'CTE SE-A',     to: '/app/acero'         },
-  { icon: Layers,    label: 'Cimentaciones',    sub: 'CTE SE-C',     to: '/app/cimentaciones' },
+  { icon: HormigonIcon,     label: 'Hormigón Armado', sub: 'Código Estructural', to: '/app/hormigon'      },
+  { icon: AceroIcon,        label: 'Acero',            sub: 'CTE SE-A',           to: '/app/acero'         },
+  { icon: CimentacionesIcon, label: 'Cimentaciones',   sub: 'CTE SE-C',           to: '/app/cimentaciones' },
 ]
 
 export default function AppLayout() {
+  const { theme, toggle } = useTheme()
+
   /* Sidebar collapses to icon-only below 900 px */
   const [narrow, setNarrow] = useState(() =>
     typeof window !== 'undefined' ? window.innerWidth < 900 : false
@@ -147,22 +151,43 @@ export default function AppLayout() {
         </nav>
 
         {/* Footer */}
-        {!narrow && (
-          <div style={{
-            marginTop: 'auto',
-            padding: '1rem',
-            borderTop: '1px solid var(--border)',
-            flexShrink: 0,
-          }}>
+        <div style={{
+          marginTop: 'auto',
+          padding: narrow ? '0.75rem 0' : '0.75rem 1rem',
+          borderTop: '1px solid var(--border)',
+          flexShrink: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: narrow ? 'center' : 'space-between',
+        }}>
+          {!narrow && (
             <p style={{ margin: 0, fontSize: '0.65rem', color: 'var(--text-3)' }}>
               Concreta v0.1
             </p>
-          </div>
-        )}
+          )}
+          <button
+            onClick={toggle}
+            title={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: 28, height: 28,
+              background: 'var(--bg-hover)',
+              border: '1px solid var(--border)',
+              borderRadius: 6,
+              cursor: 'pointer',
+              color: 'var(--text-2)',
+              transition: 'color 0.15s, background 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-1)'; e.currentTarget.style.background = 'var(--bg-muted)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-2)'; e.currentTarget.style.background = 'var(--bg-hover)' }}
+          >
+            {theme === 'dark' ? <Sun size={13} strokeWidth={1.75} /> : <Moon size={13} strokeWidth={1.75} />}
+          </button>
+        </div>
       </aside>
 
       {/* ── Main content ──────────────────────────────────────── */}
-      <main style={{ flex: 1, overflow: 'auto', background: 'var(--bg)', minWidth: 0 }}>
+      <main style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', background: 'var(--bg)', minWidth: 0 }}>
         <Outlet />
       </main>
     </div>

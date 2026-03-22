@@ -20,6 +20,27 @@ function setBlack(doc)   { doc.setTextColor(30, 30, 30) }
 function setGray(doc)    { doc.setTextColor(120, 120, 120) }
 function setDark(doc)    { doc.setTextColor(60, 60, 60) }
 
+/** Sustituye caracteres griegos y especiales que Latin-1/WIN1252 no soporta */
+function norm(str) {
+  if (str === null || str === undefined) return ''
+  return String(str)
+    .replace(/σ/g, 'sigma').replace(/Σ/g, 'Sigma')
+    .replace(/δ/g, 'delta').replace(/Δ/g, 'Delta')
+    .replace(/γ/g, 'gamma').replace(/Γ/g, 'Gamma')
+    .replace(/φ/g, 'phi').replace(/Φ/g, 'Phi')
+    .replace(/λ/g, 'lambda').replace(/Λ/g, 'Lambda')
+    .replace(/β/g, 'beta').replace(/Β/g, 'Beta')
+    .replace(/α/g, 'alpha').replace(/Α/g, 'Alpha')
+    .replace(/θ/g, 'theta').replace(/ε/g, 'eps')
+    .replace(/μ/g, 'mu').replace(/ρ/g, 'rho')
+    .replace(/∅/g, 'fi').replace(/\u2205/g, 'fi')
+    .replace(/λ̄/g, 'lambda').replace(/λ̄/g, 'lambda')
+    .replace(/—/g, '-').replace(/·/g, 'x')
+    .replace(/≤/g, '<=').replace(/≥/g, '>=')
+    .replace(/∞/g, 'inf')
+    .replace(/[^\x00-\xFF]/g, '?')  // cualquier otro no-Latin1 → ?
+}
+
 function sectionHeading(doc, text, y) {
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(8.5)
@@ -38,16 +59,51 @@ function tableHeader(doc, cols, labels, y) {
   return y + 6.5
 }
 
+/**
+ * Clona un SVG diseñado para fondo oscuro y adapta sus colores para
+ * impresión sobre papel blanco: convierte strokes/fills blancos-transparentes
+ * en equivalentes oscuros.
+ */
+function fixDiagramForPrint(svgEl) {
+  const clone = svgEl.cloneNode(true)
+
+  // Fondo blanco explícito
+  const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+  bg.setAttribute('x', '0')
+  bg.setAttribute('y', '0')
+  bg.setAttribute('width', String(svgEl.viewBox.baseVal.width  || 310))
+  bg.setAttribute('height', String(svgEl.viewBox.baseVal.height || 288))
+  bg.setAttribute('fill', '#ffffff')
+  clone.insertBefore(bg, clone.firstChild)
+
+  // Recorre todos los elementos y corrige colores blancos-transparentes
+  function fixEl(el) {
+    ;['stroke', 'fill'].forEach(attr => {
+      const val = el.getAttribute(attr)
+      if (!val || !val.includes('255,255,255')) return
+      const fixed = val.replace(/rgba\(255,255,255,([\d.]+)\)/g, (_, a) => {
+        const alpha = Math.min(parseFloat(a) * 2, 0.35).toFixed(2)
+        return `rgba(0,0,0,${alpha})`
+      })
+      el.setAttribute(attr, fixed)
+    })
+    for (const child of el.children) fixEl(child)
+  }
+  fixEl(clone)
+  return clone
+}
+
 /* ── Función principal ───────────────────────────────────────────────────── */
 /**
  * @param {object} config
  * @param {string} config.titulo
  * @param {Array<{label:string, valor:string|number, unidad:string}>} config.datosEntrada
- * @param {SVGSVGElement|null} config.svgElement
+ * @param {SVGSVGElement|null} config.svgElement          — sección transversal
+ * @param {SVGSVGElement|null} config.diagramSvgElement   — diagramas M/V/f (opcional)
  * @param {Array} config.resultados  — mismo formato que ResultsTable
  * @param {string} config.referenciasNorma
  */
-export async function exportarPdf({ titulo, datosEntrada, svgElement, resultados, referenciasNorma }) {
+export async function exportarPdf({ titulo, datosEntrada, svgElement, diagramSvgElement, resultados, referenciasNorma }) {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
   const fecha = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })
 
@@ -91,12 +147,13 @@ export async function exportarPdf({ titulo, datosEntrada, svgElement, resultados
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(8.5)
     setDark(doc)
-    doc.text(String(d.label), ML + 2, y + 4)
+    doc.text(norm(d.label), ML + 2, y + 4)
 
+    const val = d.valor ?? d.value  // acepta ambas claves
     doc.setFont('courier', 'normal')
     doc.setFontSize(8.5)
     setBlack(doc)
-    doc.text(`${d.valor}${d.unidad ? '  ' + d.unidad : ''}`, ML + 82, y + 4)
+    doc.text(norm(`${val}${d.unidad ? '  ' + d.unidad : ''}`), ML + 82, y + 4)
 
     y += 6
   })
@@ -123,6 +180,30 @@ export async function exportarPdf({ titulo, datosEntrada, svgElement, resultados
     await svg2pdf(svgElement, doc, { x: svgX, y, width: svgW, height: svgH })
 
     y += svgH + 14
+  }
+
+  /* ── Diagramas de esfuerzos (M, V, f) ────────────────────────────────── */
+  if (diagramSvgElement) {
+    // Siempre empezar en página nueva: los diagramas + tabla no caben junto al perfil
+    doc.addPage()
+    y = 22
+
+    y = sectionHeading(doc, 'DIAGRAMAS DE ESFUERZOS', y)
+
+    const vb         = diagramSvgElement.viewBox?.baseVal
+    const dAspect    = vb && vb.height > 0 ? vb.width / vb.height : 310 / 288
+    const diagW      = CW                          // ancho = contenido completo
+    const diagH      = Math.round(diagW / dAspect) // alto proporcional ≈ 158 mm
+
+    // Borde contenedor
+    doc.setDrawColor(210, 215, 225)
+    doc.setLineWidth(0.25)
+    doc.roundedRect(ML - 2, y - 2, diagW + 4, diagH + 4, 2, 2, 'S')
+
+    const printDiag = fixDiagramForPrint(diagramSvgElement)
+    await svg2pdf(printDiag, doc, { x: ML, y, width: diagW, height: diagH })
+
+    y += diagH + 10
   }
 
   /* ── Nueva página si no hay espacio para la tabla ─────────────────────── */
@@ -154,13 +235,13 @@ export async function exportarPdf({ titulo, datosEntrada, svgElement, resultados
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(8)
     setDark(doc)
-    doc.text(r.nombre, ML + RC[0] + 2, y + 4.5)
+    doc.text(norm(r.nombre), ML + RC[0] + 2, y + 4.5)
 
     doc.setFont('courier', 'normal')
     doc.setFontSize(7.5)
     setBlack(doc)
-    doc.text(`${calc} ${unid}`.trim(), ML + RC[1] + 2, y + 4.5)
-    doc.text(`${lim} ${unid}`.trim(),  ML + RC[2] + 2, y + 4.5)
+    doc.text(norm(`${calc} ${unid}`.trim()), ML + RC[1] + 2, y + 4.5)
+    doc.text(norm(`${lim} ${unid}`.trim()),  ML + RC[2] + 2, y + 4.5)
     doc.text(aprov,                    ML + RC[3] + 2, y + 4.5)
 
     // Estado — verde/rojo
@@ -186,10 +267,13 @@ export async function exportarPdf({ titulo, datosEntrada, svgElement, resultados
 
   /* ── Referencias normativas ───────────────────────────────────────────── */
   if (referenciasNorma) {
+    const refStr = Array.isArray(referenciasNorma)
+      ? referenciasNorma.join(' · ')
+      : referenciasNorma
     doc.setFont('helvetica', 'italic')
     doc.setFontSize(7.5)
     setGray(doc)
-    const lines = doc.splitTextToSize(referenciasNorma, CW)
+    const lines = doc.splitTextToSize(norm(refStr), CW)
     doc.text(lines, ML, y)
   }
 
@@ -204,9 +288,10 @@ export async function exportarPdf({ titulo, datosEntrada, svgElement, resultados
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(7.5)
     setGray(doc)
-    doc.text(`Generado con Concreta — ${fecha}`, PAGE_W / 2, PAGE_H - 7, { align: 'center' })
+    doc.text(`Generado con Concreta - ${fecha}`, PAGE_W / 2, PAGE_H - 7, { align: 'center' })
     doc.text(`${p} / ${totalPages}`, PAGE_W - MR, PAGE_H - 7, { align: 'right' })
   }
 
-  doc.save('concreta-viga.pdf')
+  const filename = `concreta-${titulo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}.pdf`
+  doc.save(filename)
 }

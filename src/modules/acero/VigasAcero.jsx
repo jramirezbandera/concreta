@@ -4,6 +4,7 @@ import perfilesData               from '../../data/perfilesAcero.json'
 import { calcularVigaAcero, calcularEsfuerzosAcero } from './engine/calculosAcero'
 import { exportarPdf }            from '../../utils/exportPdf'
 import PerfilAcero                from '../../components/svg/PerfilAcero'
+import DiagramaEsfuerzosAcero    from '../../components/svg/DiagramaEsfuerzosAcero'
 import InputField                 from '../../components/common/InputField'
 import SelectField                from '../../components/common/SelectField'
 import InputGroup                 from '../../components/common/InputGroup'
@@ -58,7 +59,8 @@ export default function VigasAcero() {
   const [calcError, setCalcError] = useState(null)
   const [isStale, setIsStale] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
-  const svgWrapperRef = useRef(null)
+  const svgWrapperRef  = useRef(null)
+  const diagramWrapRef = useRef(null)
 
   function set(key, val) {
     setV(prev => ({ ...prev, [key]: val }))
@@ -125,7 +127,8 @@ export default function VigasAcero() {
     if (!results || isExporting) return
     setIsExporting(true)
     try {
-      const svgEl = svgWrapperRef.current?.querySelector('svg') ?? null
+      const svgEl     = svgWrapperRef.current?.querySelector('svg')  ?? null
+      const diagramEl = diagramWrapRef.current?.querySelector('svg') ?? null
       const Med = v.modo === 'cargas' ? esfuerzosCalculados?.Med_kNm : v.Med
       const Ved = v.modo === 'cargas' ? esfuerzosCalculados?.Ved_kN  : v.Ved
       const datosEntrada = [
@@ -149,6 +152,7 @@ export default function VigasAcero() {
         titulo: 'Comprobación de viga de acero laminado',
         datosEntrada,
         svgElement: svgEl,
+        diagramSvgElement: diagramEl,
         resultados: results.resumen,
         referenciasNorma: 'CTE DB SE-A / CE. Art. 6.2.5 Flexión. Art. 6.2.6 Cortante. Art. 6.3.2 Pandeo lateral. DB-SE Art. 4.3.3 Flechas.',
       })
@@ -202,8 +206,8 @@ export default function VigasAcero() {
             <div style={{
               marginTop: '0.5rem',
               padding: '0.55rem 0.75rem',
-              background: 'rgba(56,189,248,0.05)',
-              border: '1px solid rgba(56,189,248,0.1)',
+              background: 'var(--accent-subtle)',
+              border: '1px solid var(--accent-border)',
               borderRadius: 6,
               fontFamily: 'var(--font-mono)',
               fontSize: '0.7rem',
@@ -260,7 +264,7 @@ export default function VigasAcero() {
               {esfuerzosCalculados && (
                 <div style={{
                   marginTop: '0.75rem', padding: '0.6rem 0.75rem',
-                  background: 'rgba(56,189,248,0.05)', border: '1px solid rgba(56,189,248,0.12)',
+                  background: 'var(--accent-subtle)', border: '1px solid var(--accent-border)',
                   borderRadius: 6, fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--accent-dim)',
                 }}>
                   Med = {esfuerzosCalculados.Med_kNm} kN·m &nbsp;·&nbsp; Ved = {esfuerzosCalculados.Ved_kN} kN
@@ -292,6 +296,33 @@ export default function VigasAcero() {
           }}
         >
           <PerfilAcero perfil={perfilObj} />
+        </div>
+
+        {/* Diagrama M/V/f */}
+        <div
+          ref={diagramWrapRef}
+          style={{
+          background: 'var(--bg-muted)', border: '1px solid var(--border)',
+          borderRadius: 10, padding: '0.75rem 0.5rem 0.5rem',
+        }}>
+          <p style={{
+            margin: '0 0 0.4rem 0.5rem',
+            fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.08em',
+            textTransform: 'uppercase', color: 'var(--text-3)',
+          }}>
+            Diagramas de esfuerzos
+          </p>
+          <DiagramaEsfuerzosAcero
+            tipoViga={v.tipoViga}
+            L={v.L}
+            qd={v.modo === 'cargas' ? (esfuerzosCalculados?.qd ?? 0) : 0}
+            q_ser={v.g + v.q}
+            Iy={perfilObj?.Iy ?? 0}
+            Med={v.modo === 'cargas' ? (esfuerzosCalculados?.Med_kNm ?? 0) : v.Med}
+            Ved={v.modo === 'cargas' ? (esfuerzosCalculados?.Ved_kN ?? 0) : v.Ved}
+            flecha={results?.flecha?.flecha ?? 0}
+            modo={v.modo}
+          />
         </div>
 
         {/* Placeholder */}
@@ -397,7 +428,7 @@ export default function VigasAcero() {
 function DetailsPanel({ title, items }) {
   return (
     <div style={{ background: 'var(--bg-muted)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-      <div style={{ padding: '0.55rem 1rem', borderBottom: '1px solid var(--border)', background: 'rgba(255,255,255,0.02)' }}>
+      <div style={{ padding: '0.55rem 1rem', borderBottom: '1px solid var(--border)', background: 'var(--table-head-bg)' }}>
         <span style={{ fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-3)' }}>
           {title}
         </span>
@@ -418,7 +449,7 @@ function DetailsPanel({ title, items }) {
 
 function SummaryItem({ label, value }) {
   return (
-    <div>
+    <div style={{ minWidth: 0, maxWidth: '100%' }}>
       <p style={{ margin: '0 0 0.1rem', fontSize: '0.62rem', color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{label}</p>
       <p style={{ margin: 0, fontSize: '0.82rem', fontFamily: 'var(--font-mono)', fontWeight: 500, color: 'var(--text-1)' }}>{value}</p>
     </div>

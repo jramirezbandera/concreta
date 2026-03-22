@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Layers } from 'lucide-react'
+import { CimentacionesIcon } from '../components/svg/ModuleIcons'
 import Zapatas      from '../modules/cimentaciones/Zapatas'
 import Losa         from '../modules/cimentaciones/Losa'
 import MurosHormigon from '../modules/cimentaciones/MurosHormigon'
@@ -18,7 +18,7 @@ export default function Cimentaciones() {
       {/* Header + tabs */}
       <div style={{ borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '1rem 1.75rem 0.75rem' }}>
-          <Layers size={16} strokeWidth={1.5} style={{ color: 'var(--accent-dim)' }} />
+          <CimentacionesIcon size={16} strokeWidth={1.5} style={{ color: 'var(--accent-dim)' }} />
           <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-1)', letterSpacing: '-0.01em' }}>
             Cimentaciones
           </span>

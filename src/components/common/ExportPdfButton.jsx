@@ -16,7 +16,7 @@ export default function ExportPdfButton({ onClick, disabled = false, loading = f
         fontFamily: 'var(--font-sans)',
         fontSize: '0.82rem',
         fontWeight: 500,
-        border: `1px solid ${(disabled || loading) ? 'var(--border)' : 'rgba(56,189,248,0.25)'}`,
+        border: `1px solid ${(disabled || loading) ? 'var(--border)' : 'var(--accent-border)'}`,
         borderRadius: 8,
         cursor: (disabled || loading) ? 'not-allowed' : 'pointer',
         transition: 'background 0.15s, border-color 0.15s, color 0.15s',
@@ -24,13 +24,13 @@ export default function ExportPdfButton({ onClick, disabled = false, loading = f
       }}
       onMouseEnter={(e) => {
         if (disabled || loading) return
-        e.currentTarget.style.background = 'rgba(56,189,248,0.07)'
-        e.currentTarget.style.borderColor = 'rgba(56,189,248,0.45)'
+        e.currentTarget.style.background = 'var(--accent-subtle)'
+        e.currentTarget.style.borderColor = 'var(--accent-border-hover)'
       }}
       onMouseLeave={(e) => {
         if (disabled || loading) return
         e.currentTarget.style.background = 'transparent'
-        e.currentTarget.style.borderColor = 'rgba(56,189,248,0.25)'
+        e.currentTarget.style.borderColor = 'var(--accent-border)'
       }}
     >
       {loading

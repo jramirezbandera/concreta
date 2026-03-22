@@ -8,7 +8,7 @@ export default function ModoEsfuerzosToggle({ modo, onChange }) {
     <div
       style={{
         display: 'inline-flex',
-        background: 'rgba(255,255,255,0.04)',
+        background: 'var(--bg-input)',
         border: '1px solid var(--border)',
         borderRadius: 8,
         padding: 3,
@@ -31,7 +31,7 @@ export default function ModoEsfuerzosToggle({ modo, onChange }) {
               cursor: 'pointer',
               transition: 'background 0.18s, color 0.18s',
               background: active ? 'var(--accent)' : 'transparent',
-              color: active ? '#050a12' : 'var(--text-2)',
+              color: active ? 'var(--btn-on-accent)' : 'var(--text-2)',
             }}
           >
             {opt.label}

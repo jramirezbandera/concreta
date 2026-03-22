@@ -9,8 +9,8 @@ export default function StaleBanner() {
     <div style={{
       display: 'flex', alignItems: 'center', gap: '0.5rem',
       padding: '0.55rem 1rem',
-      background: 'rgba(210,153,34,0.06)',
-      border: '1px solid rgba(210,153,34,0.22)',
+      background: 'var(--warn-bg)',
+      border: '1px solid var(--warn-border)',
       borderRadius: 8,
       fontSize: '0.78rem',
       color: 'var(--warn)',

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Zap, Eye, Shield, Building2, Wrench, Layers, ArrowRight } from 'lucide-react'
+import { Zap, Eye, Shield, ArrowRight } from 'lucide-react'
+import { HormigonIcon, AceroIcon, CimentacionesIcon } from '../components/svg/ModuleIcons'
 
 /* ── Scroll reveal ────────────────────────────────────────── */
 function useScrollReveal() {
@@ -31,9 +32,9 @@ const features = [
 ]
 
 const modules = [
-  { icon: Building2, title: 'Hormigón Armado',  desc: 'Flexión, cortante y dimensionado de secciones según EHE.', path: '/app/hormigon' },
-  { icon: Wrench,    title: 'Acero',             desc: 'Perfiles laminados y comprobaciones según CTE SE-A.',       path: '/app/acero'     },
-  { icon: Layers,    title: 'Cimentaciones',     desc: 'Zapatas y cálculo geotécnico básico.',                     path: '/app/cimentaciones' },
+  { icon: HormigonIcon,      title: 'Hormigón Armado', desc: 'Flexión, cortante y dimensionado de secciones según EHE.', path: '/app/hormigon'      },
+  { icon: AceroIcon,         title: 'Acero',            desc: 'Perfiles laminados y comprobaciones según CTE SE-A.',       path: '/app/acero'         },
+  { icon: CimentacionesIcon, title: 'Cimentaciones',    desc: 'Zapatas y cálculo geotécnico básico.',                      path: '/app/cimentaciones' },
 ]
 
 /* ── Styles (local vars for brevity) ─────────────────────── */
@@ -43,12 +44,12 @@ const S = {
     height: 56,
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     padding: '0 2rem',
-    background: 'rgba(6,9,15,0.8)',
+    background: 'var(--nav-bg)',
     backdropFilter: 'blur(12px)',
-    borderBottom: '1px solid rgba(255,255,255,0.06)',
+    borderBottom: '1px solid var(--nav-border)',
   },
   logo: {
-    fontSize: '0.95rem', fontWeight: 600, color: '#e6edf3',
+    fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-1)',
     textDecoration: 'none', letterSpacing: '-0.01em',
   },
   navLink: {
@@ -58,7 +59,7 @@ const S = {
   ctaBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
     padding: '0.4rem 0.9rem',
-    background: 'var(--text-1)', color: '#06090f',
+    background: 'var(--text-1)', color: 'var(--bg)',
     fontSize: '0.8rem', fontWeight: 600,
     border: 'none', borderRadius: 6, cursor: 'pointer',
     textDecoration: 'none',
@@ -115,7 +116,7 @@ export default function Landing() {
           aria-hidden="true"
           style={{
             position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
-            backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.065) 1px, transparent 1px)',
+            backgroundImage: 'radial-gradient(circle, var(--dot-color) 1px, transparent 1px)',
             backgroundSize: '24px 24px',
             maskImage: 'radial-gradient(ellipse 70% 60% at 50% 0%, black 30%, transparent 100%)',
             WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 0%, black 30%, transparent 100%)',
@@ -182,7 +183,7 @@ export default function Landing() {
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
                 padding: '0.65rem 1.5rem',
-                background: 'var(--text-1)', color: '#06090f',
+                background: 'var(--text-1)', color: 'var(--bg)',
                 fontSize: '0.88rem', fontWeight: 600,
                 border: 'none', borderRadius: 7, cursor: 'pointer',
                 transition: 'opacity 0.15s',

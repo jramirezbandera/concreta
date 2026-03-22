@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Building2 } from 'lucide-react'
+import { HormigonIcon } from '../components/svg/ModuleIcons'
 import Vigas    from '../modules/hormigon/Vigas'
 import Pilares  from '../modules/hormigon/Pilares'
 
@@ -22,11 +22,11 @@ export default function Hormigon() {
             padding: '1rem 1.75rem 0.75rem',
           }}
         >
-          <Building2 size={16} strokeWidth={1.5} style={{ color: 'var(--accent-dim)' }} />
+          <HormigonIcon size={16} strokeWidth={1.5} style={{ color: 'var(--accent-dim)' }} />
           <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-1)', letterSpacing: '-0.01em' }}>
             Hormigón Armado
           </span>
-          <span className="badge" style={{ marginLeft: '0.25rem' }}>EHE-08</span>
+          <span className="badge" style={{ marginLeft: '0.25rem' }}>CE</span>
         </div>
 
         {/* Tab bar */}

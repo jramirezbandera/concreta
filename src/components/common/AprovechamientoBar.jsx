@@ -3,9 +3,9 @@ export default function AprovechamientoBar({ value }) {
   const display = value.toFixed(1)      // mostrar valor real aunque supere 100
 
   const color =
-    value < 80  ? '#3fb950' :
-    value <= 100 ? '#d29922' :
-                   '#f85149'
+    value < 80  ? 'var(--ok)' :
+    value <= 100 ? 'var(--warn)' :
+                   'var(--fail)'
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', minWidth: 120 }}>
@@ -15,7 +15,7 @@ export default function AprovechamientoBar({ value }) {
           flex: 1,
           height: 5,
           borderRadius: 99,
-          background: 'rgba(255,255,255,0.06)',
+          background: 'var(--bar-track)',
           overflow: 'hidden',
         }}
       >

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Wrench } from 'lucide-react'
+import { AceroIcon } from '../components/svg/ModuleIcons'
 import VigasAcero   from '../modules/acero/VigasAcero'
 import PilaresAcero from '../modules/acero/PilaresAcero'
 
@@ -16,7 +16,7 @@ export default function Acero() {
       {/* Header + tabs */}
       <div style={{ borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '1rem 1.75rem 0.75rem' }}>
-          <Wrench size={16} strokeWidth={1.5} style={{ color: 'var(--accent-dim)' }} />
+          <AceroIcon size={16} strokeWidth={1.5} style={{ color: 'var(--accent-dim)' }} />
           <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-1)', letterSpacing: '-0.01em' }}>
             Estructuras de Acero
           </span>
