@@ -1,6 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@400;500&display=swap');
-@import "tailwindcss";
-
 /* ── Design tokens — tema oscuro (por defecto) ──────────── */
 :root {
   --bg:            #06090f;
@@ -316,6 +314,178 @@ body {
   .res-value, .res-label {
     word-break: break-word;
   }
+}
+
+/* ── Conversor de unidades ──────────────────────────────── */
+.cv-btn {
+  position: fixed;
+  top: 13px;
+  right: 16px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-md);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-2);
+  font-size: 0.72rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  transition: all 0.15s;
+}
+.cv-btn:hover { color: var(--text-1); border-color: var(--border-md); background: var(--bg-hover); }
+.cv-btn-active {
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.cv-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 299;
+}
+
+.cv-panel {
+  position: fixed;
+  z-index: 300;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-md);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-muted);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.cv-header-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.cv-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-3);
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.cv-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.cv-cat {
+  padding: 0.18rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 0.65rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.cv-cat:hover { color: var(--text-1); border-color: var(--border-md); }
+.cv-cat-on {
+  border-color: var(--accent-border);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.cv-body {
+  padding: 0.75rem 0.85rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 260px);
+}
+
+.cv-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cv-lbl {
+  display: block;
+  font-size: 0.62rem;
+  color: var(--text-3);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.cv-results {
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.cv-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.45rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.cv-row:last-child { border-bottom: none; }
+.cv-row:hover { background: var(--bg-hover); }
+.cv-row-from { background: var(--accent-subtle); }
+.cv-row-from:hover { background: var(--accent-subtle); }
+
+.cv-row-unit {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--text-2);
+}
+.cv-row-from .cv-row-unit { color: var(--accent); }
+
+.cv-row-val {
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+}
+.cv-row-from .cv-row-val { color: var(--accent); font-weight: 600; }
+
+.cv-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.62rem;
+  color: var(--text-3);
+  text-align: center;
 }
 
 /* ── Responsive sidebar ─────────────────────────────────── */

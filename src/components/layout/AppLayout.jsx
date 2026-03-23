@@ -3,6 +3,8 @@ import { NavLink, Outlet, Link } from 'react-router-dom'
 import { ChevronLeft, Sun, Moon } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 import { HormigonIcon, AceroIcon, CimentacionesIcon } from '../svg/ModuleIcons'
+import ConversorUnidades from '../common/ConversorUnidades'
+import Calculadora from '../common/Calculadora'
 
 const NAV_ITEMS = [
   { icon: HormigonIcon,     label: 'Hormigón Armado', sub: 'Código Estructural', to: '/app/hormigon'      },
@@ -12,6 +14,9 @@ const NAV_ITEMS = [
 
 export default function AppLayout() {
   const { theme, toggle } = useTheme()
+  const [panelAbierto, setPanelAbierto] = useState(null) // 'calc' | 'conversor' | null
+
+  const togglePanel = (id) => setPanelAbierto(p => p === id ? null : id)
 
   /* Sidebar collapses to icon-only below 900 px */
   const [narrow, setNarrow] = useState(() =>
@@ -190,6 +195,9 @@ export default function AppLayout() {
       <main style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', background: 'var(--bg)', minWidth: 0 }}>
         <Outlet />
       </main>
+
+      <Calculadora   open={panelAbierto === 'calc'}     onToggle={() => togglePanel('calc')} />
+      <ConversorUnidades open={panelAbierto === 'conversor'} onToggle={() => togglePanel('conversor')} />
     </div>
   )
 }
